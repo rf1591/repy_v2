@@ -111,12 +111,16 @@ subprocess.getattr = getattr
 # to validate the safety of the user code before we timeout, 
 # and exit with an exception
 # AR: Increasing timeout to 15 seconds, see r3410 / #744
-EVALUTATION_TIMEOUT = 15
+EVALUATION_TIMEOUT = 15
 
 if platform.machine().startswith('armv'):
   # The Nokia needs more time to evaluate code safety, especially
   # when under heavy loads
-  EVALUTATION_TIMEOUT = 200
+  EVALUATION_TIMEOUT = 200
+
+if platform.machine() == 'mips':
+  # OpenWrt routers need more time to evaluate code safety
+  EVALUATION_TIMEOUT = 100
 
 """
 Repyv2 Changes
@@ -316,8 +320,8 @@ def safe_check_subprocess(code):
   # Wait for the process to terminate
   starttime = nonportable.getruntime()
 
-  # Only wait up to EVALUTATION_TIMEOUT seconds before terminating
-  while nonportable.getruntime() - starttime < EVALUTATION_TIMEOUT:
+  # Only wait up to EVALUATION_TIMEOUT seconds before terminating
+  while nonportable.getruntime() - starttime < EVALUATION_TIMEOUT:
     # Did the process finish running?
     if proc.poll() != None:
       break;
