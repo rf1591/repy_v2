@@ -44,7 +44,9 @@ JIFFIES_PER_SECOND = 100.0
 PAGE_SIZE = os.sysconf('SC_PAGESIZE')
 
 # Get the thread id of the currently executing thread
-if running_32bit:
+if platform.machine() == 'mips':
+  GETTID = 4222
+elif running_32bit:
   GETTID = 224 
 else:
   GETTID = 186
